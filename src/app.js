@@ -53,6 +53,7 @@ import TimeTable from './utils/timetable'
 import Broadcast from './interaction/broadcast'
 import Helper from './interaction/helper'
 import Tizen from './utils/tizen'
+import Netcast from './utils/netcast'
 import InteractionMain from './interaction/items/main'
 import InteractionCategory from './interaction/items/category'
 import InteractionLine from './interaction/items/line'
@@ -226,7 +227,7 @@ function startApp(){
     })
 
     /** Чтоб не писали по 100 раз */
-    
+
     if(!Storage.get('parser_torrent_type')) Storage.set('parser_torrent_type','torlook')
 
     /** Выход из приложения */
@@ -236,7 +237,7 @@ function startApp(){
 
     Activity.listener.follow('backward',(event)=>{
         if(!start_time) start_time = Date.now()
-        
+
         if(event.count == 1 && Date.now() > start_time + (1000 * 2)){
             let enabled = Controller.enabled()
 
@@ -262,6 +263,7 @@ function startApp(){
                         if(Platform.is('android')) Android.exit()
                         //пока не используем, нужно разобраться почему вызывается активити при загрузке главной
                         if(Platform.is('orsay')) Orsay.exit()
+                        if(Platform.is('netcast')) Netcast.exit()
                     }
                     else{
                         Controller.toggle(enabled.name)
@@ -341,7 +343,7 @@ function startApp(){
 
         if(e.name == 'keyboard_type'){
             $('body').toggleClass('system--keyboard',Storage.field('keyboard_type') == 'lampa' ? false : true)
-        } 
+        }
     })
 
     /** End */
@@ -444,7 +446,7 @@ function startApp(){
         if(e.code == 37 && psdg < 0){
             psdg = 0
         }
-        
+
         if(psdg >= 0 && mask[psdg] == e.code) psdg++
         else psdg = -1
 
@@ -472,7 +474,7 @@ function startApp(){
         if(!Player.opened()){
             if(color_keys[e.code]){
                 let type = color_keys[e.code]
-                
+
                 Activity.push({
                     url: '',
                     title: type == 'book' ? Lang.translate('title_book') : type == 'like' ? Lang.translate('title_like'): type == 'history' ? Lang.translate('title_history') : Lang.translate('title_wath'),
@@ -485,7 +487,7 @@ function startApp(){
     })
 
     /** Обновление состояния карточек каждые 5 минут */
-    
+
     let last_card_update = Date.now()
     let lets_card_update = ()=>{
         if(last_card_update < Date.now() - 1000 * 60 * 5){
@@ -494,13 +496,13 @@ function startApp(){
             Activity.renderLayers().forEach((layer)=>{
                 $('.card',layer).each(function(){
                     let update = $(this).data('update')
-                
+
                     if(typeof update == 'function') update()
                 })
             })
         }
     }
-    
+
     setInterval(()=>{
         if(!Player.opened()) lets_card_update()
     },1000 * 60)
@@ -512,11 +514,11 @@ function startApp(){
     Lampa.Listener.follow('activity',(e)=>{
         if(e.type == 'archive' && e.object.activity){
             let update = $('.card.focus',e.object.activity.render()).eq(0).data('update')
-            
+
             if(typeof update == 'function') update()
         }
     })
-    
+
     /** End */
 }
 

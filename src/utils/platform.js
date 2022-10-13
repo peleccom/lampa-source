@@ -40,7 +40,7 @@ function init(){
     else{
         Storage.set('platform','')
     }
-    
+
     Storage.set('native',Storage.get('platform') ? true : false)
 }
 
@@ -54,7 +54,7 @@ function get(){
 
 /**
  * Если это платформа
- * @param {String} need - какая нужна? tizen, webos, android, orsay
+ * @param {String} need - какая нужна? tizen, webos, android, orsay, netcast
  * @returns Boolean
  */
 function is(need){
